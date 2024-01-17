@@ -110,7 +110,7 @@ function x --description "Extracts archived file"
                     tar xvf "$full_path"
                     test $status -eq 0 && set -q _flag_remove && command rm -f $file
                 end
-            case '*.gz'
+            case '*.gz' '*.z'
                 _x_check_dependence gzip || continue
                 if set -q _flag_list
                     gunzip -l "$full_path"
@@ -159,15 +159,6 @@ function x --description "Extracts archived file"
                 else
                     _x_check_dependence lzma || continue
                     unlzma -k "$full_path"
-                    test $status -eq 0 && set -q _flag_remove && command rm -f $file
-                end
-            case '*.z'
-                if set -q _flag_list
-                    _x_check_dependence 7zz 7za || continue
-                    type -q 7zz && 7zz l "$full_path" || 7za l "$full_path"
-                else
-                    _x_check_dependence compress || continue
-                    uncompress -k -N "$full_path"
                     test $status -eq 0 && set -q _flag_remove && command rm -f $file
                 end
             case '*.zip'

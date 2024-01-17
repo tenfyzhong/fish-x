@@ -288,15 +288,6 @@ for suffix in .lzma
     _test_dependence -s $suffix -d lzma
 end
 
-@echo =========== z ===========
-for suffix in .z
-    _test_x -f "compress -c $source > $archived$suffix" \
-        -s $suffix \
-        -p "Date      Time    Attr         Size   Compressed  Name"
-    _test_dependence -s $suffix -d "7zz 7za" -l
-    _test_dependence -s $suffix -d compress
-end
-
 @echo =========== zip ===========
 for suffix in .zip
     _test_x -f "zip $archived$suffix $source" \
