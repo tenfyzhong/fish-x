@@ -8,6 +8,7 @@ function _mock_typeq_value
         @echo "mock $v"
         set -pgx cmd $v
     end
+    @echo "current mocks: $mocks"
     set -gx query_value $_flag_value
     function type
         argparse 'q/query=!test -n "$_flag_value"' -- $argv 2>/dev/null
@@ -247,7 +248,7 @@ for suffix in .bz2
     _test_x -f "bzip2 -k $source" \
         -s $suffix \
         -p "Date      Time    Attr         Size   Compressed  Name"
-    _test_dependence -s $suffix -d 7zz -l
+    _test_dependence -s $suffix -d "7zz 7za" -l
     _test_dependence -s $suffix -d bzip2
 end
 
@@ -256,7 +257,7 @@ for suffix in .xz
     _test_x -f "xz -k -c $source > $archived$suffix" \
         -s $suffix \
         -p "Date      Time    Attr         Size   Compressed  Name"
-    _test_dependence -s $suffix -d 7zz -l
+    _test_dependence -s $suffix -d "7zz 7za" -l
     _test_dependence -s $suffix -d xz
 end
 
@@ -283,7 +284,7 @@ for suffix in .lzma
     _test_x -f "lzma -k $source" \
         -s $suffix \
         -p "Date      Time    Attr         Size   Compressed  Name"
-    _test_dependence -s $suffix -d 7zz -l
+    _test_dependence -s $suffix -d "7zz 7za" -l
     _test_dependence -s $suffix -d lzma
 end
 
@@ -292,7 +293,7 @@ for suffix in .z
     _test_x -f "compress -c $source > $archived$suffix" \
         -s $suffix \
         -p "Date      Time    Attr         Size   Compressed  Name"
-    _test_dependence -s $suffix -d 7zz -l
+    _test_dependence -s $suffix -d "7zz 7za" -l
     _test_dependence -s $suffix -d compress
 end
 
@@ -319,8 +320,8 @@ for suffix in .7z
     _test_x -f "7zz a $archived$suffix $source" \
         -s $suffix \
         -p "Date      Time    Attr         Size   Compressed  Name"
-    _test_dependence -s $suffix -d 7zz -l
-    _test_dependence -s $suffix -d 7zz
+    _test_dependence -s $suffix -d "7zz 7za" -l
+    _test_dependence -s $suffix -d "7zz 7za"
 end
 
 @echo =========== zst ===========

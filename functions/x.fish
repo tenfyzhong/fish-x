@@ -120,8 +120,8 @@ function x --description "Extracts archived file"
                 end
             case '*.bz2'
                 if set -q _flag_list
-                    _x_check_dependence 7zz || continue
-                    7zz l "$full_path"
+                    _x_check_dependence 7zz 7za || continue
+                    type -q 7zz && 7zz l "$full_path" || 7za l "$full_path"
                 else
                     _x_check_dependence bzip2 || continue
                     bunzip2 -k "$full_path"
@@ -129,8 +129,8 @@ function x --description "Extracts archived file"
                 end
             case '*.xz'
                 if set -q _flag_list
-                    _x_check_dependence 7zz || continue
-                    7zz l "$full_path"
+                    _x_check_dependence 7zz 7za || continue
+                    type -q 7zz && 7zz l "$full_path" || 7za l "$full_path"
                 else
                     _x_check_dependence xz || continue
                     unxz -k "$full_path"
@@ -154,8 +154,8 @@ function x --description "Extracts archived file"
                 end
             case '*.lzma'
                 if set -q _flag_list
-                    _x_check_dependence 7zz || continue
-                    7zz l "$full_path"
+                    _x_check_dependence 7zz 7za || continue
+                    type -q 7zz && 7zz l "$full_path" || 7za l "$full_path"
                 else
                     _x_check_dependence lzma || continue
                     unlzma -k "$full_path"
@@ -163,8 +163,8 @@ function x --description "Extracts archived file"
                 end
             case '*.z'
                 if set -q _flag_list
-                    _x_check_dependence 7zz || continue
-                    7zz l "$full_path"
+                    _x_check_dependence 7zz 7za || continue
+                    type -q 7zz && 7zz l "$full_path" || 7za l "$full_path"
                 else
                     _x_check_dependence compress || continue
                     uncompress -k -N "$full_path"
@@ -187,11 +187,11 @@ function x --description "Extracts archived file"
                     test $status -eq 0 && set -q _flag_remove && command rm -f $file
                 end
             case '*.7z'
-                _x_check_dependence 7zz || continue
+                _x_check_dependence 7zz 7za || continue
                 if set -q _flag_list
-                    7zz l "$full_path"
+                    type -q 7zz && 7zz l "$full_path" || 7za l "$full_path"
                 else
-                    7zz x "$full_path"
+                    type -q 7zz && 7zz x "$full_path" || 7za x "$full_path"
                     test $status -eq 0 && set -q _flag_remove && command rm -f $file
                 end
             case '*.zst'
