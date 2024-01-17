@@ -15,8 +15,7 @@ function _mock_typeq_value
         if builtin contains -- $_flag_q $cmd
             return $query_value
         end
-        # builtin type -q $_flag_value
-        return 0
+        builtin type -q $_flag_q
     end
 end
 
@@ -41,8 +40,8 @@ function _init_env
     echo 'hello world' > $source
     eval "$_flag_f 2>/dev/null"
     @echo 'after init env, files'
-    ls -al
     command rm -f $source
+    ls -al
 end
 
 function _test_x
@@ -51,7 +50,7 @@ function _test_x
         'p/pattern=!test -n "$_flag_value"' \
         -- $argv 2>/dev/null
 
-    @echo === "[-f:$_flag_f] [-s:$_flag_s] [-p:$_flag_p]" ===
+    @echo === "test x [-f:$_flag_f] [-s:$_flag_s] [-p:$_flag_p]" ===
 
     set -l suffix $_flag_s
 
@@ -86,7 +85,7 @@ function _test_dependence
         'l/list' \
         -- $argv 2>/dev/null
 
-    @echo === "[-s:$_flag_s] [-d:$_flag_d] [-l:$_flag_l]" ===
+    @echo === "test dependence [-s:$_flag_s] [-d:$_flag_d] [-l:$_flag_l]" ===
 
     set temp (command mktemp -d)
     builtin cd $temp
@@ -176,18 +175,9 @@ for suffix in .tar.zma .tar.lzma .tlz
     _test_x -f "tar --lzma -cf $archived$suffix $source" \
         -s $suffix \
         -p "-rw-r--r--.*$source\$"
-    _test_dependence -s $suffix -d tar -d "lzma lzcat" -l
-    _test_dependence -s $suffix -d tar -d "lzma lzcat"
+    _test_dependence -s $suffix -d tar -d "lzma" -l
+    _test_dependence -s $suffix -d tar -d "lzma"
 end
-
-@echo =========== lzcat ===========
-_mock_typeq_value -v 1 lzma
-for suffix in .tar.zma .tar.lzma .tlz
-    _test_x -f "tar --lzma -cf $archived$suffix $source" \
-        -s $suffix \
-        -p "-rw-r--r--.*$source\$"
-end
-_demock_typeq lzma
 
 @echo =========== zstd ===========
 for suffix in .tar.zst .tzst
@@ -265,14 +255,14 @@ end
 for suffix in .lrz
     _test_x -f "lrzip $source" \
         -s $suffix \
-        -p "CRC32 used for integrity testing"
+        -p "Detected lrzip version"
     _test_dependence -s $suffix -d lrzip -l
     _test_dependence -s $suffix -d lrzip
 end
 
 @echo =========== lz4 ===========
 for suffix in .lz4
-    _test_x -f "lz4 $source $archived$suffix" \
+    _test_x -f "lz4 -c $source > $archived$suffix" \
         -s $suffix \
         -p "Frames           Type Block  Compressed  Uncompressed     Ratio   Filename"
     _test_dependence -s $suffix -d lz4 -l
@@ -302,8 +292,8 @@ for suffix in .rar
     _test_x -f "rar a $archived$suffix $source" \
         -s $suffix \
         -p "Attributes      Size     Date    Time   Name"
-    _test_dependence -s $suffix -d rar -l
-    _test_dependence -s $suffix -d rar
+    _test_dependence -s $suffix -d unrar -l
+    _test_dependence -s $suffix -d unrar
 end
 
 @echo =========== 7z ===========
