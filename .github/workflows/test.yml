@@ -8,4 +8,4 @@ jobs:
     uses: tenfyzhong/workflows/.github/workflows/fishtape.yml@main
     with:
       test-glob: "tests/*.fish"
-      dependences: "curl pigz pbzip2 xz-utils lzma zstd lzip lz4 lrzip 7zip bzip2 lrzip cpio rar unrar zpaq"
+      dependencies: "curl pigz pbzip2 xz-utils lzma zstd lzip lz4 lrzip 7zip bzip2 lrzip cpio rar unrar zpaq"
