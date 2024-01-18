@@ -58,11 +58,11 @@ function x --description "Extracts archived file"
                 end
             case '*.tar.zma' '*.tar.lzma' '*.tlz'
                 _x_check_dependence tar || continue
-                _x_check_dependence lzma lzcat || continue
+                _x_check_dependence lzma || continue
                 if set -q _flag_list
-                    type -q lzma && tar --lzma -tvf "$full_path" || lzcat "$full_path" | tar tvf -
+                    type -q lzma && tar --lzma -tvf "$full_path" 
                 else
-                    type -q lzma && tar --lzma -xvf "$full_path" || lzcat "$full_path" | tar xvf -
+                    type -q lzma && tar --lzma -xvf "$full_path" 
                     test $status -eq 0 && set -q _flag_remove && command rm -f $file
                 end
             case '*.tar.zst' '*.tzst'
@@ -149,7 +149,8 @@ function x --description "Extracts archived file"
                 if set -q _flag_list
                     lz4 --list "$full_path"
                 else
-                    unlz4 -k "$full_path"
+                    set -l target (path change-extension '' $full_path)
+                    unlz4 -k -c "$full_path" > $target
                     test $status -eq 0 && set -q _flag_remove && command rm -f $file
                 end
             case '*.lzma'
@@ -170,7 +171,7 @@ function x --description "Extracts archived file"
                     test $status -eq 0 && set -q _flag_remove && command rm -f $file
                 end
             case '*.rar'
-                _x_check_dependence rar || continue
+                _x_check_dependence unrar || continue
                 if set -q _flag_list
                     unrar l "$full_path"
                 else
